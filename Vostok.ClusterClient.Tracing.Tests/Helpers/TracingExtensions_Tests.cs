@@ -97,7 +97,7 @@ namespace Vostok.Clusterclient.Tracing.Tests.Helpers
         }
 
         [Test]
-        public void SetResponseDetails_should_respect_stream_content_after_response_dispose_if_nothing_read()
+        public void SetResponseDetails_should_respect_stream_content_after_response_dispose_if_not_read()
         {
             response = response.WithStream(new MemoryStream(new byte[123]));
 
