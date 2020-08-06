@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Vostok.Commons.Threading;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
@@ -9,6 +10,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
         private readonly Stream stream;
         private readonly IHttpRequestSpanBuilder builder;
         private long? read;
+        private AtomicBoolean disposed = false;
 
         public ProxyStream(Stream stream, IHttpRequestSpanBuilder builder)
         {
@@ -47,10 +49,14 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
+            if (!disposed.TrySetTrue())
+                return;
 
-            builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read);
-            builder.Dispose();
+            using (builder)
+            using (stream)
+            {
+                builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read);
+            }
         }
     }
 }

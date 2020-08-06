@@ -110,5 +110,21 @@ namespace Vostok.Clusterclient.Tracing.Tests.Helpers
 
             builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, null);
         }
+
+        [Test]
+        public void SetResponseDetails_should_dispose_underlying_stream()
+        {
+            var stream = Substitute.For<Stream>();
+            response = response.WithStream(stream);
+
+            response = builder.SetResponseDetails(response);
+
+            builder.Received(1).SetAnnotation(Constants.StreamingAnnotation, true);
+            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Code, (int)response.Code);
+
+            response.Dispose();
+
+            stream.Received(1).Dispose();
+        }
     }
 }

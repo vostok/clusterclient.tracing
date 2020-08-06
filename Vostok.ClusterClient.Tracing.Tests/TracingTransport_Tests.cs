@@ -103,6 +103,19 @@ namespace Vostok.Clusterclient.Tracing.Tests
         }
 
         [Test]
+        public void Should_dispose_underlying_stream()
+        {
+            var stream = Substitute.For<Stream>();
+            response = response.WithStream(stream);
+
+            var result = Run();
+
+            result.Dispose();
+
+            stream.Received(1).Dispose();
+        }
+
+        [Test]
         public void Should_record_common_annotations()
         {
             Run();

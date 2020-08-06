@@ -24,6 +24,9 @@
     <RepositoryUrl>https://github.com/vostok/clusterclient.tracing</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\vostok.commons.threading\Vostok.Commons.Threading\AtomicBoolean.cs" Link="Commons\AtomicBoolean.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Vostok.Tracing.Abstractions">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\vostok.tracing.abstractions\Vostok.Tracing.Abstractions\bin\Release\netstandard2.0\Vostok.Tracing.Abstractions.dll</HintPath>

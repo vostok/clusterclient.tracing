@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
@@ -105,6 +106,19 @@ namespace Vostok.Clusterclient.Tracing.Tests
         }
 
         [Test]
+        public void Should_dispose_underlying_stream()
+        {
+            var stream = Substitute.For<Stream>();
+            response = response.WithStream(stream);
+
+            var result = Run();
+
+            result.Dispose();
+
+            stream.Received().Dispose();
+        }
+
+        [Test]
         public void Should_record_cluster_annotations()
         {
             Run();
@@ -124,7 +138,11 @@ namespace Vostok.Clusterclient.Tracing.Tests
         }
 
         private ClusterResult Run() => module
-            .ExecuteAsync(context, _ => Task.FromResult(new ClusterResult(ClusterResultStatus.Success, new List<ReplicaResult>(), response, request)))
+            .ExecuteAsync(context, _ => Task.FromResult(new ClusterResult(
+                ClusterResultStatus.Success, 
+                new List<ReplicaResult> {new ReplicaResult(new Uri("http://google.com"), response, ResponseVerdict.Accept, 1.Seconds())}, 
+                response, 
+                request)))
             .GetAwaiter()
             .GetResult();
     }
