@@ -2,9 +2,11 @@
 using NSubstitute;
 using NUnit.Framework;
 using Vostok.Clusterclient.Core.Model;
+using Vostok.Clusterclient.Tracing.Helpers;
+using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
-namespace Vostok.Clusterclient.Tracing.Tests
+namespace Vostok.Clusterclient.Tracing.Tests.Helpers
 {
     [TestFixture]
     internal class TracingExtensions_Tests
@@ -75,6 +77,38 @@ namespace Vostok.Clusterclient.Tracing.Tests
             builder.SetResponseDetails(response);
 
             builder.Received(1).SetResponseDetails(200, 123L);
+        }
+
+        [Test]
+        public void SetResponseDetails_should_respect_stream_content_after_response_dispose_if_read()
+        {
+            response = response.WithStream(new MemoryStream(new byte[123]));
+
+            response = builder.SetResponseDetails(response);
+
+            builder.Received(1).SetAnnotation(Constants.StreamingAnnotation, true);
+            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Code, (int)response.Code);
+            
+            response.Stream.CopyTo(new MemoryStream());
+
+            response.Dispose();
+
+            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, 123L);
+        }
+
+        [Test]
+        public void SetResponseDetails_should_respect_stream_content_after_response_dispose_if_nothing_read()
+        {
+            response = response.WithStream(new MemoryStream(new byte[123]));
+
+            response = builder.SetResponseDetails(response);
+
+            builder.Received(1).SetAnnotation(Constants.StreamingAnnotation, true);
+            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Code, (int)response.Code);
+
+            response.Dispose();
+
+            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, null);
         }
     }
 }
