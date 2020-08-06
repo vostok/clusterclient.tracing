@@ -108,7 +108,7 @@ namespace Vostok.Clusterclient.Tracing.Tests.Helpers
 
             response.Dispose();
 
-            builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, null);
+            builder.Received(0).SetAnnotation(WellKnownAnnotations.Http.Response.Size, null);
         }
 
         [Test]
