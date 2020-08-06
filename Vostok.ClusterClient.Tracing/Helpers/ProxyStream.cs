@@ -10,7 +10,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
         private readonly Stream stream;
         private readonly IHttpRequestSpanBuilder builder;
         private long? read;
-        private AtomicBoolean disposed = false;
+        private readonly AtomicBoolean disposed = false;
 
         public ProxyStream(Stream stream, IHttpRequestSpanBuilder builder)
         {
