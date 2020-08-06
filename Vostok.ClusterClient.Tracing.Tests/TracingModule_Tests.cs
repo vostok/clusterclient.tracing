@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NSubstitute;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 using Vostok.Clusterclient.Core.Model;
 using Vostok.Clusterclient.Core.Modules;
 using Vostok.Clusterclient.Core.Strategies;
+using Vostok.Clusterclient.Tracing.Helpers;
 using Vostok.Tracing.Abstractions;
 
 namespace Vostok.Clusterclient.Tracing.Tests
@@ -57,7 +59,7 @@ namespace Vostok.Clusterclient.Tracing.Tests
 
             Run();
 
-            spanBuilder.ReceivedCalls().Should().HaveCount(2);
+            spanBuilder.ReceivedCalls().Should().HaveCount(1);
         }
 
         [Test]
@@ -72,11 +74,34 @@ namespace Vostok.Clusterclient.Tracing.Tests
         }
 
         [Test]
-        public void Should_record_response_annotations()
+        public void Should_record_response_code_annotation()
         {
             Run();
 
             spanBuilder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Code, 200);
+        }
+
+        [Test]
+        public void Should_record_response_size_annotation_for_content()
+        {
+            response = response.WithContent(new byte[123]);
+
+            Run();
+
+            spanBuilder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, 123L);
+        }
+
+        [Test]
+        public void Should_record_response_size_annotation_for_stream()
+        {
+            response = response.WithStream(new MemoryStream(new byte[123]));
+
+            var result = Run();
+
+            result.Response.Stream.CopyTo(new MemoryStream());
+            result.Dispose();
+
+            spanBuilder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, 123L);
         }
 
         [Test]
@@ -98,7 +123,7 @@ namespace Vostok.Clusterclient.Tracing.Tests
             spanBuilder.Received(1).SetAnnotation(WellKnownAnnotations.Common.Operation, "GET: foo/bar");
         }
 
-        private void Run() => module
+        private ClusterResult Run() => module
             .ExecuteAsync(context, _ => Task.FromResult(new ClusterResult(ClusterResultStatus.Success, new List<ReplicaResult>(), response, request)))
             .GetAwaiter()
             .GetResult();
