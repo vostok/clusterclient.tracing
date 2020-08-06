@@ -55,7 +55,8 @@ namespace Vostok.Clusterclient.Tracing.Helpers
             using (builder)
             using (stream)
             {
-                builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read);
+                if (read.HasValue)
+                    builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read.Value);
             }
         }
     }
