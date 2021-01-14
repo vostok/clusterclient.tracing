@@ -164,6 +164,6 @@ namespace Vostok.Clusterclient.Tracing.Helpers
         public override string ToString()
             => stream.ToString();
 
-#endregion
+        #endregion
     }
 }

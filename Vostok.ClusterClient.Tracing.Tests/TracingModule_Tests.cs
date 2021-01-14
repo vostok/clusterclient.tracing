@@ -138,11 +138,14 @@ namespace Vostok.Clusterclient.Tracing.Tests
         }
 
         private ClusterResult Run() => module
-            .ExecuteAsync(context, _ => Task.FromResult(new ClusterResult(
-                ClusterResultStatus.Success, 
-                new List<ReplicaResult> {new ReplicaResult(new Uri("http://google.com"), response, ResponseVerdict.Accept, 1.Seconds())}, 
-                response, 
-                request)))
+            .ExecuteAsync(
+                context,
+                _ => Task.FromResult(
+                    new ClusterResult(
+                        ClusterResultStatus.Success,
+                        new List<ReplicaResult> {new ReplicaResult(new Uri("http://google.com"), response, ResponseVerdict.Accept, 1.Seconds())},
+                        response,
+                        request)))
             .GetAwaiter()
             .GetResult();
     }

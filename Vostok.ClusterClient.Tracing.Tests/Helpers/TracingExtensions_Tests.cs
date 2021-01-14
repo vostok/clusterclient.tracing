@@ -44,7 +44,7 @@ namespace Vostok.Clusterclient.Tracing.Tests.Helpers
         [Test]
         public void SetRequestDetails_should_respect_composite_content_length()
         {
-            request = request.WithContent(new [] {new byte[10], new byte[11]});
+            request = request.WithContent(new[] {new byte[10], new byte[11]});
 
             builder.SetRequestDetails(request);
 
@@ -88,7 +88,7 @@ namespace Vostok.Clusterclient.Tracing.Tests.Helpers
 
             builder.Received(1).SetAnnotation(Constants.StreamingAnnotation, true);
             builder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Code, (int)response.Code);
-            
+
             response.Stream.CopyTo(new MemoryStream());
 
             response.Dispose();
