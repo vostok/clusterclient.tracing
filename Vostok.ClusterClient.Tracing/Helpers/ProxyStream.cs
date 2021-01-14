@@ -30,7 +30,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            var result = await stream.ReadAsync(buffer, offset, count, cancellationToken);
+            var result = await stream.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             AddRead(result);
             return result;
         }
@@ -38,7 +38,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 #if NETCOREAPP
         public override async ValueTask<int> ReadAsync(Memory<byte> destination, CancellationToken cancellationToken = default)
         {
-            var result = await stream.ReadAsync(destination, cancellationToken);
+            var result = await stream.ReadAsync(destination, cancellationToken).ConfigureAwait(false);
             AddRead(result);
             return result;
         }
