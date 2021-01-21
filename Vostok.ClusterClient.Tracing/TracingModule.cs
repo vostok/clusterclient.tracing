@@ -49,6 +49,7 @@ namespace Vostok.Clusterclient.Tracing
 
             if (traceContext != null)
             {
+                // (kungurtsev): SetResponseDetails will dispose spanBuilder
                 result = spanBuilder.SetResponseDetails(result);
             }
             else
