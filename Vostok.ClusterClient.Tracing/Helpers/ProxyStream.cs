@@ -52,6 +52,13 @@ namespace Vostok.Clusterclient.Tracing.Helpers
             return result;
         }
 
+        public override int EndRead(IAsyncResult asyncResult)
+        {
+            var result = stream.EndRead(asyncResult);
+            AddRead(result);
+            return result;
+        }
+
         protected override void Dispose(bool disposing)
         {
             DisposeBuilder();
@@ -145,9 +152,6 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
             => stream.BeginWrite(buffer, offset, count, callback, state);
-
-        public override int EndRead(IAsyncResult asyncResult)
-            => stream.EndRead(asyncResult);
 
         public override void EndWrite(IAsyncResult asyncResult)
             => stream.EndWrite(asyncResult);
