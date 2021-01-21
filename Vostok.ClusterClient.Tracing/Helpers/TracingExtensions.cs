@@ -39,11 +39,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
                 builder.SetAnnotation(Constants.StreamingAnnotation, true);
                 builder.SetAnnotation(WellKnownAnnotations.Http.Response.Code, (int)response.Code);
 
-                return new Response(
-                    response.Code,
-                    null,
-                    response.Headers,
-                    new ProxyStream(response.Stream, builder));
+                return response.WithStream(new ProxyStream(response.Stream, builder));
             }
 
             builder.SetResponseDetails((int)response.Code, GetContentLength(response));
