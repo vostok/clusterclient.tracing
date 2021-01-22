@@ -57,7 +57,7 @@ namespace Vostok.Clusterclient.Tracing.Tests
 
             Run();
 
-            spanBuilder.ReceivedCalls().Should().HaveCount(1);
+            spanBuilder.ReceivedCalls().Should().HaveCount(2);
         }
 
         [Test]
