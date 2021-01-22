@@ -56,6 +56,10 @@ namespace Vostok.Clusterclient.Tracing
             {
                 response = spanBuilder.SetResponseDetails(response);
             }
+            else
+            {
+                spanBuilder.Dispose();
+            }
 
             return response;
         }
