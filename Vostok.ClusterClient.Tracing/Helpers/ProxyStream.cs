@@ -63,6 +63,10 @@ namespace Vostok.Clusterclient.Tracing.Helpers
             return result;
         }
 
+        // TODO(kungurtsev): wrap destination into countable stream.
+        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+            => stream.CopyToAsync(destination, bufferSize, cancellationToken);
+
         protected override void Dispose(bool disposing)
         {
             DisposeBuilder();
@@ -151,9 +155,6 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
         public override void WriteByte(byte value)
             => stream.WriteByte(value);
-
-        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-            => stream.CopyToAsync(destination, bufferSize, cancellationToken);
 
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
             => stream.BeginRead(buffer, offset, count, callback, state);
