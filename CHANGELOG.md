@@ -1,3 +1,7 @@
+## 0.1.4 (25-01-20201):
+
+Revert `0.1.3` version.
+
 ## 0.1.3 (22-01-2021):
 
 Fix `http.response.size` and end timestamp for responses with stream (when UseResponseStreaming setting is enabled).
