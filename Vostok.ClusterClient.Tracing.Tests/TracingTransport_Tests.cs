@@ -100,6 +100,7 @@ namespace Vostok.Clusterclient.Tracing.Tests
             response.Dispose();
 
             spanBuilder.Received(1).SetAnnotation(WellKnownAnnotations.Http.Response.Size, 123L);
+            spanBuilder.Received(1).Dispose();
         }
 
         [Test]

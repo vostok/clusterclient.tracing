@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Vostok.Clusterclient.Core.Model;
+﻿using Vostok.Clusterclient.Core.Model;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
@@ -21,9 +20,13 @@ namespace Vostok.Clusterclient.Tracing.Helpers
         {
             builder.SetClusterStatus(result.Status.ToString());
 
-            builder.SetResponseDetails(result.Response);
+            var newResponse = builder.SetResponseDetails(result.Response);
 
-            // TODO(kungurtsev): handle case when result.Response is not ProxyStream.
+            if (!ReferenceEquals(result.Response, newResponse))
+            {
+                // TODO(kungurtsev): handle case when result.Response is not ProxyStream.
+                builder.Dispose();
+            }
 
             return result;
         }
