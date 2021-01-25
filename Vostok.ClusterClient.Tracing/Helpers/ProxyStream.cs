@@ -12,6 +12,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
     {
         private readonly Stream stream;
         private readonly IHttpRequestSpanBuilder builder;
+        private IHttpRequestSpanBuilder additionalBuilder;
         private long? read;
         private readonly AtomicBoolean disposed = false;
 
@@ -20,6 +21,9 @@ namespace Vostok.Clusterclient.Tracing.Helpers
             this.stream = stream;
             this.builder = builder;
         }
+
+        public void AddAdditionalBuilder(IHttpRequestSpanBuilder value) =>
+            additionalBuilder = value;
 
         public override int Read(byte[] buffer, int offset, int count)
         {
@@ -80,9 +84,13 @@ namespace Vostok.Clusterclient.Tracing.Helpers
                 return;
 
             if (read.HasValue)
+            {
                 builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read.Value);
+                additionalBuilder?.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read.Value);
+            }
 
             builder.Dispose();
+            additionalBuilder?.Dispose();
         }
 
         private void AddRead(long value) =>
