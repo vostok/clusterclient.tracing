@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Vostok.Clusterclient.Core.Model;
 using Vostok.Clusterclient.Core.Transport;
-using Vostok.Clusterclient.Tracing.Helpers;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
@@ -35,33 +34,30 @@ namespace Vostok.Clusterclient.Tracing
 
         public async Task<Response> SendAsync(Request request, TimeSpan? connectionTimeout, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            var spanBuilder = configuration.Tracer.BeginHttpClientSpan();
-
-            var traceContext = configuration.Tracer.CurrentContext;
-            if (traceContext != null)
+            using (var spanBuilder = configuration.Tracer.BeginHttpClientSpan())
             {
-                spanBuilder.SetTargetDetails(TargetServiceProvider?.Invoke(), TargetEnvironmentProvider?.Invoke());
-                spanBuilder.SetRequestDetails(request);
-                spanBuilder.SetAnnotation(WellKnownAnnotations.Common.Component, Constants.Component);
+                var traceContext = configuration.Tracer.CurrentContext;
+                if (traceContext != null)
+                {
+                    spanBuilder.SetTargetDetails(TargetServiceProvider?.Invoke(), TargetEnvironmentProvider?.Invoke());
+                    spanBuilder.SetRequestDetails(request);
+                    spanBuilder.SetAnnotation(WellKnownAnnotations.Common.Component, Constants.Component);
 
-                if (configuration.AdditionalRequestTransformation != null)
-                    request = configuration.AdditionalRequestTransformation(request, traceContext);
+                    if (configuration.AdditionalRequestTransformation != null)
+                        request = configuration.AdditionalRequestTransformation(request, traceContext);
+                }
+
+                var response = await transport
+                    .SendAsync(request, connectionTimeout, timeout, cancellationToken)
+                    .ConfigureAwait(false);
+
+                if (traceContext != null)
+                {
+                    spanBuilder.SetResponseDetails(response);
+                }
+
+                return response;
             }
-
-            var response = await transport
-                .SendAsync(request, connectionTimeout, timeout, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (traceContext != null)
-            {
-                response = spanBuilder.SetResponseDetails(response);
-            }
-            else
-            {
-                spanBuilder.Dispose();
-            }
-
-            return response;
         }
     }
 }

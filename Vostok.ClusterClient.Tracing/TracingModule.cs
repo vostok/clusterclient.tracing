@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 using Vostok.Clusterclient.Core;
 using Vostok.Clusterclient.Core.Model;
 using Vostok.Clusterclient.Core.Modules;
-using Vostok.Clusterclient.Tracing.Helpers;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
@@ -31,33 +30,30 @@ namespace Vostok.Clusterclient.Tracing
 
         public async Task<ClusterResult> ExecuteAsync(IRequestContext context, Func<IRequestContext, Task<ClusterResult>> next)
         {
-            var spanBuilder = config.Tracer.BeginHttpClusterSpan();
-
-            var traceContext = config.Tracer.CurrentContext;
-            if (traceContext != null)
+            using (var spanBuilder = config.Tracer.BeginHttpClusterSpan())
             {
-                spanBuilder.SetTargetDetails(TargetServiceProvider?.Invoke(), TargetEnvironmentProvider?.Invoke());
-                spanBuilder.SetRequestDetails(context.Request);
-                spanBuilder.SetAnnotation(WellKnownAnnotations.Common.Component, Constants.Component);
+                var traceContext = config.Tracer.CurrentContext;
+                if (traceContext != null)
+                {
+                    spanBuilder.SetTargetDetails(TargetServiceProvider?.Invoke(), TargetEnvironmentProvider?.Invoke());
+                    spanBuilder.SetRequestDetails(context.Request);
+                    spanBuilder.SetAnnotation(WellKnownAnnotations.Common.Component, Constants.Component);
 
-                var strategy = context.Parameters.Strategy;
-                if (strategy != null)
-                    spanBuilder.SetClusterStrategy(strategy.ToString());
+                    var strategy = context.Parameters.Strategy;
+                    if (strategy != null)
+                        spanBuilder.SetClusterStrategy(strategy.ToString());
+                }
+
+                var result = await next(context).ConfigureAwait(false);
+
+                if (traceContext != null)
+                {
+                    spanBuilder.SetResponseDetails(result.Response);
+                    spanBuilder.SetClusterStatus(result.Status.ToString());
+                }
+
+                return result;
             }
-
-            var result = await next(context).ConfigureAwait(false);
-
-            if (traceContext != null)
-            {
-                // (kungurtsev): SetResponseDetails will dispose spanBuilder
-                result = spanBuilder.SetResponseDetails(result);
-            }
-            else
-            {
-                spanBuilder.Dispose();
-            }
-
-            return result;
         }
     }
 }
