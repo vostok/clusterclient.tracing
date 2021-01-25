@@ -22,12 +22,11 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
             var newResponse = builder.SetResponseDetails(result.Response);
 
-            if (!ReferenceEquals(result.Response, newResponse))
-            {
-                // TODO(kungurtsev): handle case when result.Response is not ProxyStream.
-                builder.Dispose();
-            }
+            if (ReferenceEquals(result.Response, newResponse))
+                return result;
 
+            // TODO(kungurtsev): handle case when result.Response is not ProxyStream.
+            builder.Dispose();
             return result;
         }
 
