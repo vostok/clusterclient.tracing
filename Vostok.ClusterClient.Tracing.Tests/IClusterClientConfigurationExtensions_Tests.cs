@@ -30,28 +30,31 @@ namespace Vostok.Clusterclient.Tracing.Tests
             transport = Substitute.For<ITransport>();
             transport
                 .WhenForAnyArgs(t => t.SendAsync(default, default, default, default))
-                .Do(info =>
-                {
-                    observedRequest = info.Arg<Request>();
-                    observedContext = tracer.CurrentContext;
-                });
+                .Do(
+                    info =>
+                    {
+                        observedRequest = info.Arg<Request>();
+                        observedContext = tracer.CurrentContext;
+                    });
 
             observedRequest = null;
             observedContext = null;
 
-            client = new ClusterClient(new SilentLog(),
+            client = new ClusterClient(
+                new SilentLog(),
                 config =>
                 {
                     config.ClusterProvider = new FixedClusterProvider(new Uri("http://localhost:123/"));
                     config.Transport = transport;
 
-                    config.SetupDistributedTracing(new TracingConfiguration(tracer)
-                    {
-                        AdditionalRequestTransformation = 
-                            (request, context) => request
-                                .WithHeader("traceId", context.TraceId.ToString())
-                                .WithHeader("spanId", context.SpanId.ToString())
-                    });
+                    config.SetupDistributedTracing(
+                        new TracingConfiguration(tracer)
+                        {
+                            AdditionalRequestTransformation =
+                                (request, context) => request
+                                    .WithHeader("traceId", context.TraceId.ToString())
+                                    .WithHeader("spanId", context.SpanId.ToString())
+                        });
                 });
         }
 
