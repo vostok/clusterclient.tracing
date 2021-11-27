@@ -22,31 +22,31 @@
   <ItemGroup>
    <Reference Include="Vostok.Logging.Abstractions">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.logging.abstractions\Vostok.Logging.Abstractions\bin\Release\netstandard2.0\Vostok.Logging.Abstractions.dll</HintPath>
+      <HintPath>..\..\vostok.logging.abstractions\Vostok.Logging.Abstractions\bin\Release\$(ReferencesFramework)\Vostok.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.Tracing.Abstractions">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.tracing.abstractions\Vostok.Tracing.Abstractions\bin\Release\netstandard2.0\Vostok.Tracing.Abstractions.dll</HintPath>
+      <HintPath>..\..\vostok.tracing.abstractions\Vostok.Tracing.Abstractions\bin\Release\$(ReferencesFramework)\Vostok.Tracing.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.Tracing">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.tracing\Vostok.Tracing\bin\Release\netstandard2.0\Vostok.Tracing.dll</HintPath>
+      <HintPath>..\..\vostok.tracing\Vostok.Tracing\bin\Release\$(ReferencesFramework)\Vostok.Tracing.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.Tracing.Extensions">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.tracing.extensions\Vostok.Tracing.Extensions\bin\Release\netstandard2.0\Vostok.Tracing.Extensions.dll</HintPath>
+      <HintPath>..\..\vostok.tracing.extensions\Vostok.Tracing.Extensions\bin\Release\$(ReferencesFramework)\Vostok.Tracing.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.Context">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.context\Vostok.Context\bin\Release\netstandard2.0\Vostok.Context.dll</HintPath>
+      <HintPath>..\..\vostok.context\Vostok.Context\bin\Release\$(ReferencesFramework)\Vostok.Context.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.ClusterClient.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.clusterclient.core\Vostok.ClusterClient.Core\bin\Release\netstandard2.0\Vostok.ClusterClient.Core.dll</HintPath>
+      <HintPath>..\..\vostok.clusterclient.core\Vostok.ClusterClient.Core\bin\Release\$(ReferencesFramework)\Vostok.ClusterClient.Core.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.ClusterClient.Context">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\vostok.clusterclient.context\Vostok.ClusterClient.Context\bin\Release\netstandard2.0\Vostok.ClusterClient.Context.dll</HintPath>
+      <HintPath>..\..\vostok.clusterclient.context\Vostok.ClusterClient.Context\bin\Release\$(ReferencesFramework)\Vostok.ClusterClient.Context.dll</HintPath>
     </Reference>
   </ItemGroup>
 
