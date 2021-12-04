@@ -23,6 +23,8 @@ full-build > notests:
     configuration: Release
 
   deps:
+    - -vostok.devtools
+    - vostok.devtools@with-net6.0
     - vostok.context
     - vostok.tracing
     - vostok.logging.abstractions
