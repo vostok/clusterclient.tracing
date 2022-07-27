@@ -1,0 +1,23 @@
+static Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions.SetupDistributedTracing(this Vostok.Clusterclient.Core.IClusterClientConfiguration config, Vostok.Clusterclient.Tracing.TracingConfiguration configuration) -> void
+static Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions.SetupDistributedTracing(this Vostok.Clusterclient.Core.IClusterClientConfiguration config, Vostok.Tracing.Abstractions.ITracer tracer) -> void
+Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions
+Vostok.Clusterclient.Tracing.TracingConfiguration
+Vostok.Clusterclient.Tracing.TracingConfiguration.AdditionalRequestTransformation.get -> System.Func<Vostok.Clusterclient.Core.Model.Request, Vostok.Tracing.Abstractions.TraceContext, Vostok.Clusterclient.Core.Model.Request>
+Vostok.Clusterclient.Tracing.TracingConfiguration.AdditionalRequestTransformation.set -> void
+Vostok.Clusterclient.Tracing.TracingConfiguration.Tracer.get -> Vostok.Tracing.Abstractions.ITracer
+Vostok.Clusterclient.Tracing.TracingConfiguration.TracingConfiguration(Vostok.Tracing.Abstractions.ITracer tracer) -> void
+Vostok.Clusterclient.Tracing.TracingModule
+Vostok.Clusterclient.Tracing.TracingModule.ExecuteAsync(Vostok.Clusterclient.Core.Modules.IRequestContext context, System.Func<Vostok.Clusterclient.Core.Modules.IRequestContext, System.Threading.Tasks.Task<Vostok.Clusterclient.Core.Model.ClusterResult>> next) -> System.Threading.Tasks.Task<Vostok.Clusterclient.Core.Model.ClusterResult>
+Vostok.Clusterclient.Tracing.TracingModule.TargetEnvironmentProvider.get -> System.Func<string>
+Vostok.Clusterclient.Tracing.TracingModule.TargetEnvironmentProvider.set -> void
+Vostok.Clusterclient.Tracing.TracingModule.TargetServiceProvider.get -> System.Func<string>
+Vostok.Clusterclient.Tracing.TracingModule.TargetServiceProvider.set -> void
+Vostok.Clusterclient.Tracing.TracingModule.TracingModule(Vostok.Clusterclient.Tracing.TracingConfiguration config) -> void
+Vostok.Clusterclient.Tracing.TracingTransport
+Vostok.Clusterclient.Tracing.TracingTransport.Capabilities.get -> Vostok.Clusterclient.Core.Transport.TransportCapabilities
+Vostok.Clusterclient.Tracing.TracingTransport.SendAsync(Vostok.Clusterclient.Core.Model.Request request, System.TimeSpan? connectionTimeout, System.TimeSpan timeout, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Vostok.Clusterclient.Core.Model.Response>
+Vostok.Clusterclient.Tracing.TracingTransport.TargetEnvironmentProvider.get -> System.Func<string>
+Vostok.Clusterclient.Tracing.TracingTransport.TargetEnvironmentProvider.set -> void
+Vostok.Clusterclient.Tracing.TracingTransport.TargetServiceProvider.get -> System.Func<string>
+Vostok.Clusterclient.Tracing.TracingTransport.TargetServiceProvider.set -> void
+Vostok.Clusterclient.Tracing.TracingTransport.TracingTransport(Vostok.Clusterclient.Core.Transport.ITransport transport, Vostok.Clusterclient.Tracing.TracingConfiguration configuration) -> void
