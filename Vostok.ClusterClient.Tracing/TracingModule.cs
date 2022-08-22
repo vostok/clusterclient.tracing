@@ -43,12 +43,16 @@ namespace Vostok.Clusterclient.Tracing
                 var strategy = context.Parameters.Strategy;
                 if (strategy != null)
                     spanBuilder.SetClusterStrategy(strategy.ToString());
+                
+                config.SetAdditionalRequestDetails?.Invoke(spanBuilder, context.Request);
             }
 
             var result = await next(context).ConfigureAwait(false);
 
             if (traceContext != null)
             {
+                config.SetAdditionalClusterResponseDetails?.Invoke(spanBuilder, result);
+                
                 // (kungurtsev): SetResponseDetails will dispose spanBuilder
                 result = spanBuilder.SetResponseDetails(result);
             }
