@@ -46,6 +46,8 @@ namespace Vostok.Clusterclient.Tracing
 
                 if (configuration.AdditionalRequestTransformation != null)
                     request = configuration.AdditionalRequestTransformation(request, traceContext);
+                
+                configuration.SetAdditionalRequestDetails?.Invoke(spanBuilder, request);
             }
 
             var response = await transport
@@ -54,6 +56,8 @@ namespace Vostok.Clusterclient.Tracing
 
             if (traceContext != null)
             {
+                configuration.SetAdditionalResponseDetails?.Invoke(spanBuilder, response);
+                
                 response = spanBuilder.SetResponseDetails(response);
             }
             else
