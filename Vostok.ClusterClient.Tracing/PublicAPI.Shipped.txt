@@ -1,9 +1,15 @@
-static Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions.SetupDistributedTracing(this Vostok.Clusterclient.Core.IClusterClientConfiguration config, Vostok.Clusterclient.Tracing.TracingConfiguration configuration) -> void
+﻿static Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions.SetupDistributedTracing(this Vostok.Clusterclient.Core.IClusterClientConfiguration config, Vostok.Clusterclient.Tracing.TracingConfiguration configuration) -> void
 static Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions.SetupDistributedTracing(this Vostok.Clusterclient.Core.IClusterClientConfiguration config, Vostok.Tracing.Abstractions.ITracer tracer) -> void
 Vostok.Clusterclient.Tracing.IClusterClientConfigurationExtensions
 Vostok.Clusterclient.Tracing.TracingConfiguration
 Vostok.Clusterclient.Tracing.TracingConfiguration.AdditionalRequestTransformation.get -> System.Func<Vostok.Clusterclient.Core.Model.Request, Vostok.Tracing.Abstractions.TraceContext, Vostok.Clusterclient.Core.Model.Request>
 Vostok.Clusterclient.Tracing.TracingConfiguration.AdditionalRequestTransformation.set -> void
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalClusterResponseDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestClusterSpanBuilder, Vostok.Clusterclient.Core.Model.ClusterResult>
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalClusterResponseDetails.set -> void
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalRequestDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestSpanBuilder, Vostok.Clusterclient.Core.Model.Request>
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalRequestDetails.set -> void
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalResponseDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestClientSpanBuilder, Vostok.Clusterclient.Core.Model.Response>
+Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalResponseDetails.set -> void
 Vostok.Clusterclient.Tracing.TracingConfiguration.Tracer.get -> Vostok.Tracing.Abstractions.ITracer
 Vostok.Clusterclient.Tracing.TracingConfiguration.TracingConfiguration(Vostok.Tracing.Abstractions.ITracer tracer) -> void
 Vostok.Clusterclient.Tracing.TracingModule

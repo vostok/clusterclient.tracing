@@ -1,6 +1,0 @@
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalClusterResponseDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestClusterSpanBuilder, Vostok.Clusterclient.Core.Model.ClusterResult>
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalClusterResponseDetails.set -> void
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalRequestDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestSpanBuilder, Vostok.Clusterclient.Core.Model.Request>
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalRequestDetails.set -> void
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalResponseDetails.get -> System.Action<Vostok.Tracing.Extensions.Http.IHttpRequestClientSpanBuilder, Vostok.Clusterclient.Core.Model.Response>
-Vostok.Clusterclient.Tracing.TracingConfiguration.SetAdditionalResponseDetails.set -> void
