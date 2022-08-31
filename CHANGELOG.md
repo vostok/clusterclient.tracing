@@ -1,3 +1,7 @@
+## 0.1.8 (31-08-2021):
+
+Added a way to provide additional annotations based on Request and Response.
+
 ## 0.1.7 (06-12-2021):
 
 Added `net6.0` target.
