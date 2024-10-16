@@ -16,6 +16,7 @@ notests *default:
     - vostok.tracing.abstractions
     - vostok.tracing.extensions
     - vostok.commons.threading/src
+    - vostok.commons.helpers/src
 
 full-build > notests:
   build:
