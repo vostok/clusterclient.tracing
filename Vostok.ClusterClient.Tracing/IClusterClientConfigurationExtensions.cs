@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Vostok.Clusterclient.Context;
 using Vostok.Clusterclient.Core;
+using Vostok.Clusterclient.Tracing.OpenTelemetry;
 using Vostok.Tracing.Abstractions;
 
 namespace Vostok.Clusterclient.Tracing
@@ -28,6 +29,33 @@ namespace Vostok.Clusterclient.Tracing
             };
 
             var tracingModule = new TracingModule(configuration)
+            {
+                TargetServiceProvider = () => config.TargetServiceName,
+                TargetEnvironmentProvider = () => config.TargetEnvironment
+            };
+
+            config.Transport = tracingTransport;
+            config.AddRequestModule(tracingModule, typeof(DistributedContextModule));
+        }
+
+        /// <summary>
+        /// TODO.
+        /// </summary>
+        internal static void SetupOpenTelemetryTracing(
+            [NotNull] this IClusterClientConfiguration config,
+            [CanBeNull] OpenTelemetryTracingConfiguration configuration = null)
+        {
+            config.SetupDistributedContext();
+
+            configuration ??= new OpenTelemetryTracingConfiguration();
+
+            var tracingTransport = new OpenTelemetryTracingTransport(config.Transport, configuration)
+            {
+                TargetServiceProvider = () => config.TargetServiceName,
+                TargetEnvironmentProvider = () => config.TargetEnvironment
+            };
+
+            var tracingModule = new OpenTelemetryTracingModule(configuration)
             {
                 TargetServiceProvider = () => config.TargetServiceName,
                 TargetEnvironmentProvider = () => config.TargetEnvironment
