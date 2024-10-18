@@ -12,7 +12,7 @@ using Vostok.Clusterclient.Core.Strategies;
 using Vostok.Clusterclient.Core.Transport;
 using Vostok.Clusterclient.Tracing.OpenTelemetry;
 
-namespace Vostok.Clusterclient.Tracing.Tests;
+namespace Vostok.Clusterclient.Tracing.Tests.OpenTelemetry;
 
 internal sealed class OpenTelemetryBadListenersConfiguration_Tests
 {

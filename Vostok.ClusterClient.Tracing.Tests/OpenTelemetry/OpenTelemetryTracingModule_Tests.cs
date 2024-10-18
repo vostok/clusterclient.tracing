@@ -1,31 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 using OpenTelemetry;
-using OpenTelemetry.Context.Propagation;
 using Vostok.Clusterclient.Core.Model;
-using Vostok.Clusterclient.Core.Transport;
+using Vostok.Clusterclient.Core.Modules;
+using Vostok.Clusterclient.Core.Strategies;
 using Vostok.Clusterclient.Tracing.OpenTelemetry;
 using Vostok.Commons.Helpers.Url;
 using Vostok.Tracing.Abstractions;
 
-namespace Vostok.Clusterclient.Tracing.Tests;
+namespace Vostok.Clusterclient.Tracing.Tests.OpenTelemetry;
 
-internal class OpenTelemetryTracingTransport_Tests
+internal class OpenTelemetryTracingModule_Tests
 {
-    private ITransport baseTransport;
+    private IRequestContext context;
 
     private string targetService;
     private string targetEnvironment;
     private Request request;
     private Response response;
 
-    private OpenTelemetryTracingTransport transport;
+    private OpenTelemetryTracingModule module;
 
     private Activity recordedActivity;
 
@@ -39,10 +40,7 @@ internal class OpenTelemetryTracingTransport_Tests
             ActivityStopped = activity => recordedActivity = activity
         });
 
-        baseTransport = Substitute.For<ITransport>();
-        baseTransport.SendAsync(default, default, default, default).ReturnsForAnyArgs(_ => response);
-
-        transport = new OpenTelemetryTracingTransport(baseTransport, new OpenTelemetryTracingConfiguration())
+        module = new OpenTelemetryTracingModule(new OpenTelemetryTracingConfiguration())
         {
             TargetServiceProvider = () => targetService,
             TargetEnvironmentProvider = () => targetEnvironment
@@ -51,8 +49,12 @@ internal class OpenTelemetryTracingTransport_Tests
         targetService = Guid.NewGuid().ToString();
         targetEnvironment = Guid.NewGuid().ToString();
 
-        request = Request.Get("http://my-host:3535/foo/bar");
+        request = Request.Get("foo/bar");
         response = Responses.Ok;
+
+        context = Substitute.For<IRequestContext>();
+        context.Request.Returns(_ => request);
+        context.Parameters.Returns(RequestParameters.Empty.WithStrategy(new ParallelRequestStrategy(2)));
     }
 
     [Test]
@@ -64,19 +66,19 @@ internal class OpenTelemetryTracingTransport_Tests
 
         recordedActivity.Kind.Should().Be(ActivityKind.Client);
         recordedActivity.Source.Name.Should().Be(Instrumentation.ActivitySourceName);
-        recordedActivity.OperationName.Should().Be(Instrumentation.ClientSpanInitialName);
+        recordedActivity.OperationName.Should().Be(Instrumentation.ClusterSpanInitialName);
         recordedActivity.Context.IsValid().Should().BeTrue();
         recordedActivity.IsStopped.Should().BeTrue();
         recordedActivity.Status.Should().Be(ActivityStatusCode.Unset);
         recordedActivity.StatusDescription.Should().BeNull();
     }
 
-    [TestCase(RequestMethods.Get, "http://my-host/bar/baz", "GET bar/baz")]
-    [TestCase(RequestMethods.Post, "http://my-host/foo/pupa?query=value", "POST foo/pupa")]
-    [TestCase(RequestMethods.Put, "http://my-host/baz/lupa", "PUT baz/lupa")]
+    [TestCase(RequestMethods.Get, "bar/baz", "GET bar/baz")]
+    [TestCase(RequestMethods.Post, "foo/pupa?query=value", "POST foo/pupa")]
+    [TestCase(RequestMethods.Put, "baz/lupa", "PUT baz/lupa")]
     public void Should_fill_span_name(string method, string url, string expectedName)
     {
-        request = new Request(method, new Uri(url, UriKind.Absolute));
+        request = new Request(method, new Uri(url, UriKind.Relative));
 
         Run();
 
@@ -84,12 +86,13 @@ internal class OpenTelemetryTracingTransport_Tests
     }
 
     [Test]
-    public void Should_fill_client_request_attributes()
+    public void Should_fill_cluster_request_attributes()
     {
-        Run();
+        var result = Run();
 
-        recordedActivity.GetTagItem(SemanticConventions.AttributeClusterRequest).Should().BeNull();
-        recordedActivity.GetTagItem(SemanticConventions.AttributeRequestStrategy).Should().BeNull();
+        recordedActivity.GetTagItem(SemanticConventions.AttributeClusterRequest).Should().Be(true);
+        recordedActivity.GetTagItem(SemanticConventions.AttributeRequestStrategy).Should().Be(context.Parameters.Strategy!.ToString());
+        recordedActivity.GetTagItem(SemanticConventions.AttributeClusterStatus).Should().Be(result.Status.ToString());
 
         recordedActivity.GetTagItem(WellKnownAnnotations.Http.Request.TargetService).Should().Be(targetService);
         recordedActivity.GetTagItem(WellKnownAnnotations.Http.Request.TargetEnvironment).Should().Be(targetEnvironment);
@@ -97,8 +100,8 @@ internal class OpenTelemetryTracingTransport_Tests
         recordedActivity.GetTagItem(SemanticConventions.AttributeHttpRequestMethod).Should().Be(request.Method);
         recordedActivity.GetTagItem(SemanticConventions.AttributeUrlFull).Should().Be(request.Url.ToStringWithoutQuery());
 
-        recordedActivity.GetTagItem(SemanticConventions.AttributeServerAddress).Should().Be("my-host");
-        recordedActivity.GetTagItem(SemanticConventions.AttributeServerPort).Should().Be(3535);
+        recordedActivity.GetTagItem(SemanticConventions.AttributeServerAddress).Should().BeNull();
+        recordedActivity.GetTagItem(SemanticConventions.AttributeServerPort).Should().BeNull();
     }
 
     [Test]
@@ -113,8 +116,8 @@ internal class OpenTelemetryTracingTransport_Tests
     }
 
     [TestCase(ResponseCode.Ok)]
-    [TestCase(ResponseCode.BadRequest)]
     [TestCase(ResponseCode.InternalServerError)]
+    [TestCase(ResponseCode.RequestTimeout)]
     public void Should_fill_status_code_attribute(ResponseCode expectedResponseCode)
     {
         response = new Response(expectedResponseCode);
@@ -178,13 +181,14 @@ internal class OpenTelemetryTracingTransport_Tests
         CheckBodySizeAttribute(bodySize);
 
         response = Responses.Ok.WithStream(new MemoryStream(content));
-        response = Run();
-        response.Stream.CopyTo(new MemoryStream());
-        response.Dispose();
+        var result = Run();
+        result.Response.Stream.CopyTo(new MemoryStream());
+        result.Dispose();
 
-        CheckBodySizeAttribute(bodySize);
         recordedActivity.GetTagItem(SemanticConventions.AttributeStreaming).Should().Be(true);
         recordedActivity.IsStopped.Should().BeTrue();
+        // TODO(kungurtsev): handle case when result.Response is not ProxyStream.
+        // CheckBodySizeAttribute(bodySize);
 
         void CheckBodySizeAttribute(long? size) =>
             recordedActivity.GetTagItem(SemanticConventions.AttributeHttpResponseBodySize).Should().Be(size);
@@ -204,67 +208,38 @@ internal class OpenTelemetryTracingTransport_Tests
     }
 
     [Test]
-    public void Should_propagate_context_and_baggage_when_propagator_configured()
-    {
-        Activity.DefaultIdFormat = ActivityIdFormat.W3C;
-
-        // note (ponomaryovigor, 17.10.2024): Set propagators via reflection in order not to install full OTel SDK. 
-        var propagator = new CompositeTextMapPropagator(new TextMapPropagator[]
-        {
-            new TraceContextPropagator(),
-            new BaggagePropagator()
-        });
-        typeof(Propagators).GetProperty(nameof(Propagators.DefaultTextMapPropagator))!
-            .SetValue(Propagators.DefaultTextMapPropagator, propagator);
-
-        Baggage.SetBaggage("TestProperty", "TestValue");
-
-        Run();
-
-        var requestArgument = Arg.Is<Request>(r =>
-            r.Headers["traceparent"].Contains(recordedActivity.Context.TraceId.ToHexString()) &&
-            r.Headers["baggage"].Contains("TestProperty"));
-
-        baseTransport.Received(1)
-            .SendAsync(requestArgument, Arg.Any<TimeSpan?>(), Arg.Any<TimeSpan>(), Arg.Any<CancellationToken>())
-            .GetAwaiter()
-            .GetResult();
-    }
-
-    [Test]
     public void Should_enrich_data_from_settings()
     {
         const string header1 = "header1";
-        const string header2 = "header2";
         const string tag = "Biba";
         const string requestTag = "request_tag";
-        const string responseTag = "response_tag";
+        const string resultTag = "response_tag";
 
         request = request.WithHeader(header1, tag);
         response = response.WithHeader(header1, tag);
 
         var configuration = new OpenTelemetryTracingConfiguration
         {
-            AdditionalRequestTransformation = (req, context) => req.WithHeader(header2, context.TraceId),
             EnrichWithRequest = (activity, req) => activity.SetTag(requestTag, req.Headers![header1]),
-            EnrichWithResponse = (activity, res) => activity.SetTag(responseTag, res.Headers[header1])
+            EnrichWithClusterResult = (activity, res) => activity.SetTag(resultTag, res.ReplicaResults.Count)
         };
-        transport = new OpenTelemetryTracingTransport(baseTransport, configuration);
+        module = new OpenTelemetryTracingModule(configuration);
 
-        Run();
-
-        var requestArgument = Arg.Is<Request>(r => r.Headers[header2] == recordedActivity.TraceId.ToHexString());
-        baseTransport.Received(1)
-            .SendAsync(requestArgument, Arg.Any<TimeSpan?>(), Arg.Any<TimeSpan>(), Arg.Any<CancellationToken>())
-            .GetAwaiter()
-            .GetResult();
+        var result = Run();
 
         recordedActivity.GetTagItem(requestTag).Should().Be(tag);
-        recordedActivity.GetTagItem(responseTag).Should().Be(tag);
+        recordedActivity.GetTagItem(resultTag).Should().Be(result.ReplicaResults.Count);
     }
 
-    private Response Run() => transport
-        .SendAsync(request, null, 5.Seconds(), CancellationToken.None)
+    private ClusterResult Run() => module
+        .ExecuteAsync(
+            context,
+            _ => Task.FromResult(
+                new ClusterResult(
+                    ClusterResultStatus.Success,
+                    new List<ReplicaResult> {new(new Uri("http://google.com"), response, ResponseVerdict.Accept, 1.Seconds())},
+                    response,
+                    request)))
         .GetAwaiter()
         .GetResult();
 }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using Vostok.Clusterclient.Core.Model;
 
-namespace Vostok.Clusterclient.Tracing;
+namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
 
 internal class OpenTelemetryTracingConfiguration
 {
