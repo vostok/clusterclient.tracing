@@ -69,6 +69,8 @@ internal class OpenTelemetryTracingModule_Tests
         recordedActivity.DisplayName.Should().Be("GET foo/bar");
         recordedActivity.Context.IsValid().Should().BeTrue();
         recordedActivity.IsStopped.Should().BeTrue();
+        recordedActivity.Status.Should().Be(ActivityStatusCode.Unset);
+        recordedActivity.StatusDescription.Should().BeNull();
     }
 
     [Test]
@@ -111,6 +113,21 @@ internal class OpenTelemetryTracingModule_Tests
         Run();
 
         recordedActivity.GetTagItem(SemanticConventions.AttributeHttpResponseStatusCode).Should().Be((int)expectedResponseCode);
+    }
+
+    [TestCase(ResponseCode.Ok, ActivityStatusCode.Unset)]
+    [TestCase(ResponseCode.BadRequest, ActivityStatusCode.Error)]
+    [TestCase(ResponseCode.InternalServerError, ActivityStatusCode.Error)]
+    public void Should_fill_activity_status_when_error_result(
+        ResponseCode responseCode,
+        ActivityStatusCode expectedActivityStatus)
+    {
+        response = new Response(responseCode);
+
+        Run();
+
+        recordedActivity.Status.Should().Be(expectedActivityStatus);
+        recordedActivity.StatusDescription.Should().BeNull();
     }
 
     [Test]

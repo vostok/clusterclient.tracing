@@ -40,10 +40,15 @@ internal static class OpenTelemetryTracingExtensions
 
     public static Response FillResponseAttributes(this Activity activity, Response response)
     {
+        var responseCode = (int)response.Code;
+        activity.SetTag(SemanticConventions.AttributeHttpResponseStatusCode, responseCode);
+
+        if (IsErrorResult(responseCode))
+            activity.SetStatus(ActivityStatusCode.Error);
+
         if (response.HasStream)
         {
             activity.SetTag(SemanticConventions.AttributeStreaming, true);
-            activity.SetTag(SemanticConventions.AttributeHttpResponseStatusCode, (int)response.Code);
 
             var builder = new OpenTelemetryHelperSpanBuilder(activity);
             if (response.Stream is ProxyStream proxyStream)
@@ -54,8 +59,6 @@ internal static class OpenTelemetryTracingExtensions
 
             return response.WithStream(new ProxyStream(response.Stream, builder, SemanticConventions.AttributeHttpResponseContentLength));
         }
-
-        activity.SetTag(SemanticConventions.AttributeHttpResponseStatusCode, (int)response.Code);
 
         long? contentLength = response.HasContent ? response.Content.Length : null;
         if (contentLength.HasValue)
@@ -75,4 +78,7 @@ internal static class OpenTelemetryTracingExtensions
         if (targetEnvironment is not null)
             activity.SetTag(WellKnownAnnotations.Http.Request.TargetEnvironment, targetEnvironment);
     }
+
+    private static bool IsErrorResult(int statusCode) =>
+        statusCode >= 400;
 }
