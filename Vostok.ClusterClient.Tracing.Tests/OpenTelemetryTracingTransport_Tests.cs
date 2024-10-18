@@ -63,7 +63,7 @@ internal class OpenTelemetryTracingTransport_Tests
         recordedActivity.Should().NotBeNull();
 
         recordedActivity.Kind.Should().Be(ActivityKind.Client);
-        recordedActivity.Source.Name.Should().Be("Vostok.ClusterClient");
+        recordedActivity.Source.Name.Should().Be(Instrumentation.ActivitySourceName);
         recordedActivity.DisplayName.Should().Be("GET foo/bar");
         recordedActivity.Context.IsValid().Should().BeTrue();
         recordedActivity.IsStopped.Should().BeTrue();
