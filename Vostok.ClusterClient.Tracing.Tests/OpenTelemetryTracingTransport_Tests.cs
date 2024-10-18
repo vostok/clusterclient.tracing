@@ -160,7 +160,7 @@ internal class OpenTelemetryTracingTransport_Tests
         CheckBodySizeAttribute(bodySize);
 
         void CheckBodySizeAttribute(long? size) =>
-            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpRequestContentLength).Should().Be(size);
+            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpRequestBodySize).Should().Be(size);
     }
 
     [Test]
@@ -187,7 +187,7 @@ internal class OpenTelemetryTracingTransport_Tests
         recordedActivity.IsStopped.Should().BeTrue();
 
         void CheckBodySizeAttribute(long? size) =>
-            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpResponseContentLength).Should().Be(size);
+            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpResponseBodySize).Should().Be(size);
     }
 
     [Test]

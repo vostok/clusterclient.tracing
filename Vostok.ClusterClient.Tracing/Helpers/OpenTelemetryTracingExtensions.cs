@@ -35,7 +35,7 @@ internal static class OpenTelemetryTracingExtensions
                        request.CompositeContent?.Length ??
                        request.StreamContent?.Length;
         if (bodySize.HasValue)
-            activity.SetTag(SemanticConventions.AttributeHttpRequestContentLength, bodySize.Value);
+            activity.SetTag(SemanticConventions.AttributeHttpRequestBodySize, bodySize.Value);
     }
 
     public static Response FillResponseAttributes(this Activity activity, Response response)
@@ -57,12 +57,12 @@ internal static class OpenTelemetryTracingExtensions
                 return response;
             }
 
-            return response.WithStream(new ProxyStream(response.Stream, builder, SemanticConventions.AttributeHttpResponseContentLength));
+            return response.WithStream(new ProxyStream(response.Stream, builder, SemanticConventions.AttributeHttpResponseBodySize));
         }
 
         long? contentLength = response.HasContent ? response.Content.Length : null;
         if (contentLength.HasValue)
-            activity.SetTag(SemanticConventions.AttributeHttpResponseContentLength, contentLength.Value);
+            activity.SetTag(SemanticConventions.AttributeHttpResponseBodySize, contentLength.Value);
 
         activity.Dispose();
         return response;
