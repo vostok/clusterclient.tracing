@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using OpenTelemetry.Trace;
 using Vostok.Clusterclient.Context;
 using Vostok.Clusterclient.Core;
 using Vostok.Clusterclient.Tracing.OpenTelemetry;
@@ -39,9 +40,12 @@ namespace Vostok.Clusterclient.Tracing
         }
 
         /// <summary>
-        /// TODO.
+        /// Sets up OTel distributed tracing of HTTP requests.
         /// </summary>
-        internal static void SetupOpenTelemetryTracing(
+        /// <param name="config">Current <see cref="IClusterClientConfiguration"/></param>
+        /// <param name="configuration"><see cref="OpenTelemetryTracingConfiguration"/> for tracing additional configuration</param>
+        /// <remarks>Note that you also need to call <see cref="ClusterClientTracerProviderBuilderExtensions.AddClusterClientInstrumentation"/> to enable activities listening.</remarks>
+        public static void SetupOpenTelemetryTracing(
             [NotNull] this IClusterClientConfiguration config,
             [CanBeNull] OpenTelemetryTracingConfiguration configuration = null)
         {

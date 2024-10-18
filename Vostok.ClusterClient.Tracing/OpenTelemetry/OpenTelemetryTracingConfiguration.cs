@@ -5,7 +5,11 @@ using Vostok.Clusterclient.Core.Model;
 
 namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
 
-internal class OpenTelemetryTracingConfiguration
+/// <summary>
+/// OTel tracing configuration options.
+/// </summary>
+[PublicAPI]
+public sealed class OpenTelemetryTracingConfiguration
 {
     /// <summary>
     /// If set to a non-null value, an additional request transformation will be applied to given <see cref="Request"/> with current <see cref="ActivityContext"/>.
