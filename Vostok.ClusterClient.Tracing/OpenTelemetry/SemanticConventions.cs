@@ -15,8 +15,8 @@ internal static class SemanticConventions
     // ClusterClient related attributes.
     private const string ClusterClientPrefix = "clusterclient.";
 
-    public const string AttributeClusterRequest = ClusterClientPrefix + "cluster_request";
-    public const string AttributeStreaming = ClusterClientPrefix + "response.streaming";
+    public const string AttributeClusterRequest = ClusterClientPrefix + "request.is_cluster";
     public const string AttributeRequestStrategy = ClusterClientPrefix + "request.strategy";
-    public const string AttributeClusterStatus = ClusterClientPrefix + "cluster_status";
+    public const string AttributeStreaming = ClusterClientPrefix + "response.is_streaming";
+    public const string AttributeClusterStatus = ClusterClientPrefix + "response.cluster_status";
 }
