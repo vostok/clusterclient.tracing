@@ -65,11 +65,22 @@ internal class OpenTelemetryTracingTransport_Tests
         recordedActivity.Kind.Should().Be(ActivityKind.Client);
         recordedActivity.Source.Name.Should().Be(Instrumentation.ActivitySourceName);
         recordedActivity.OperationName.Should().Be(Instrumentation.ClientSpanInitialName);
-        recordedActivity.DisplayName.Should().Be("GET foo/bar");
         recordedActivity.Context.IsValid().Should().BeTrue();
         recordedActivity.IsStopped.Should().BeTrue();
         recordedActivity.Status.Should().Be(ActivityStatusCode.Unset);
         recordedActivity.StatusDescription.Should().BeNull();
+    }
+
+    [TestCase(RequestMethods.Get, "http://my-host/bar/baz", "GET bar/baz")]
+    [TestCase(RequestMethods.Post, "http://my-host/foo/pupa?query=value", "POST foo/pupa")]
+    [TestCase(RequestMethods.Put, "http://my-host/baz/lupa", "PUT baz/lupa")]
+    public void Should_fill_span_name(string method, string url, string expectedName)
+    {
+        request = new Request(method, new Uri(url, UriKind.Absolute));
+
+        Run();
+
+        recordedActivity.DisplayName.Should().Be(expectedName);
     }
 
     [Test]
