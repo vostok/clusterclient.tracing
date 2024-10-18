@@ -32,7 +32,7 @@ internal class OpenTelemetryTracingTransport : ITransport
 
     public async Task<Response> SendAsync(Request request, TimeSpan? connectionTimeout, TimeSpan timeout, CancellationToken cancellationToken)
     {
-        var activity = Instrumentation.ActivitySource.StartActivity(request.Method, ActivityKind.Client);
+        var activity = Instrumentation.ActivitySource.StartActivity(Instrumentation.ClientSpanInitialName, ActivityKind.Client);
 
         if (activity?.IsAllDataRequested is true)
             request = FillRequestAttributes(activity, request);

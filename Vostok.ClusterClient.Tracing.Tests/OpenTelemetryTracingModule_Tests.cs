@@ -66,6 +66,7 @@ internal class OpenTelemetryTracingModule_Tests
 
         recordedActivity.Kind.Should().Be(ActivityKind.Client);
         recordedActivity.Source.Name.Should().Be(Instrumentation.ActivitySourceName);
+        recordedActivity.OperationName.Should().Be(Instrumentation.ClusterSpanInitialName);
         recordedActivity.DisplayName.Should().Be("GET foo/bar");
         recordedActivity.Context.IsValid().Should().BeTrue();
         recordedActivity.IsStopped.Should().BeTrue();
