@@ -25,7 +25,7 @@ internal class OpenTelemetryTracingModule : IRequestModule
 
     public async Task<ClusterResult> ExecuteAsync(IRequestContext context, Func<IRequestContext, Task<ClusterResult>> next)
     {
-        var activity = Instrumentation.ActivitySource.StartActivity(context.Request.Method, ActivityKind.Client);
+        var activity = Instrumentation.ActivitySource.StartActivity(Instrumentation.ClusterSpanInitialName, ActivityKind.Client);
 
         if (activity?.IsAllDataRequested is true)
             FillRequestAttributes(activity, context);
@@ -33,7 +33,7 @@ internal class OpenTelemetryTracingModule : IRequestModule
         var result = await next(context).ConfigureAwait(false);
 
         if (activity?.IsAllDataRequested is true)
-             FillResultAttributes(activity, result);
+            FillResultAttributes(activity, result);
         else
             activity?.Dispose();
 

@@ -9,4 +9,7 @@ internal static class Instrumentation
 
     public static readonly string ActivitySourceName = AssemblyName.Name;
     public static readonly ActivitySource ActivitySource = new(ActivitySourceName, AssemblyName.Version?.ToString());
+
+    public const string ClusterSpanInitialName = "Vostok.ClusterClient.ClusterRequestOut";
+    public const string ClientSpanInitialName = "Vostok.ClusterClient.ClientRequestOut";
 }
