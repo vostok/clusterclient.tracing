@@ -9,8 +9,10 @@ internal static class SemanticConventions
     public const string AttributeUrlFull = "url.full";
     public const string AttributeServerAddress = "server.address";
     public const string AttributeServerPort = "server.port";
-    public const string AttributeHttpRequestContentLength = "http.request.header.content-length";
-    public const string AttributeHttpResponseContentLength = "http.response.header.content-length";
+
+    // Now is experimental in OTel
+    public const string AttributeHttpRequestBodySize = "http.request.body.size";
+    public const string AttributeHttpResponseBodySize = "http.response.body.size";
 
     // ClusterClient related attributes.
     private const string ClusterClientPrefix = "clusterclient.";
