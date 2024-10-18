@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
 
-namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
+namespace Vostok.Clusterclient.Tracing.Helpers;
 
 internal sealed class OpenTelemetryHelperSpanBuilder : IHttpRequestSpanBuilder
 {
