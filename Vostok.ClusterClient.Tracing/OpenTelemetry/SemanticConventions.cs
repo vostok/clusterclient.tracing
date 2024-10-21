@@ -9,8 +9,7 @@ internal static class SemanticConventions
     public const string AttributeUrlFull = "url.full";
     public const string AttributeServerAddress = "server.address";
     public const string AttributeServerPort = "server.port";
-
-    // Now is experimental in OTel
+    // Currently experimental OTel attributes
     public const string AttributeHttpRequestBodySize = "http.request.body.size";
     public const string AttributeHttpResponseBodySize = "http.response.body.size";
 
