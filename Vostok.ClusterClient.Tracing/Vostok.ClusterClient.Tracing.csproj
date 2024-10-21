@@ -22,6 +22,10 @@
     <RepositoryUrl>https://github.com/vostok/clusterclient.tracing</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\..\vostok.commons.threading\Vostok.Commons.Threading\AtomicBoolean.cs" Link="Commons\AtomicBoolean.cs" />
   </ItemGroup>
   <ItemGroup>
