@@ -4,9 +4,6 @@
   <Import Project="..\..\vostok.devtools\git-commit-to-assembly-title\Vostok.Tools.GitCommit2AssemblyTitle.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net6.0;net471</TargetFrameworks>
-  </PropertyGroup>
-  <PropertyGroup>
     <RootNamespace>Vostok.Clusterclient.Tracing.Tests</RootNamespace>
   </PropertyGroup>
 

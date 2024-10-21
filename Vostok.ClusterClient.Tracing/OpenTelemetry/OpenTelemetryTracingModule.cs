@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -69,3 +70,4 @@ internal class OpenTelemetryTracingModule : IRequestModule
         return result;
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -243,3 +244,4 @@ internal class OpenTelemetryTracingModule_Tests
         .GetAwaiter()
         .GetResult();
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿#if NET6_0_OR_GREATER
+using JetBrains.Annotations;
 using Vostok.Clusterclient.Tracing;
 using Vostok.Clusterclient.Tracing.OpenTelemetry;
 
@@ -20,3 +21,4 @@ public static class ClusterClientTracerProviderBuilderExtensions
     public static TracerProviderBuilder AddClusterClientInstrumentation(this TracerProviderBuilder builder) =>
         builder.AddSource(Instrumentation.ActivitySourceName);
 }
+#endif

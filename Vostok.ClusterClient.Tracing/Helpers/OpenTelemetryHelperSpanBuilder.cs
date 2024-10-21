@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Diagnostics;
 using Vostok.Tracing.Abstractions;
 using Vostok.Tracing.Extensions.Http;
@@ -24,3 +25,4 @@ internal sealed class OpenTelemetryHelperSpanBuilder : IHttpRequestSpanBuilder
     public void SetEndTimestamp(DateTimeOffset? timestamp) {}
     public ISpan CurrentSpan => throw new NotSupportedException();
 }
+#endif

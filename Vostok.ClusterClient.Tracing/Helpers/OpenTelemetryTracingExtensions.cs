@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using Vostok.Clusterclient.Core.Model;
@@ -82,3 +83,4 @@ internal static class OpenTelemetryTracingExtensions
     private static bool IsErrorResult(int statusCode) =>
         statusCode >= 400;
 }
+#endif
