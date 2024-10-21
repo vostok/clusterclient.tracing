@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if NET6_0_OR_GREATER
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,3 +89,4 @@ internal sealed class OpenTelemetryBadListenersConfiguration_Tests
         .GetAwaiter()
         .GetResult();
 }
+#endif

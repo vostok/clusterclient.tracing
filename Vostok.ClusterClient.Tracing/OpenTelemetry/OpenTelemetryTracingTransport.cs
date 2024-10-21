@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,3 +87,4 @@ internal class OpenTelemetryTracingTransport : ITransport
         return request;
     }
 }
+#endif

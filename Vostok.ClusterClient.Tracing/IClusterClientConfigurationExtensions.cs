@@ -1,9 +1,11 @@
 ﻿using JetBrains.Annotations;
-using OpenTelemetry.Trace;
 using Vostok.Clusterclient.Context;
 using Vostok.Clusterclient.Core;
-using Vostok.Clusterclient.Tracing.OpenTelemetry;
 using Vostok.Tracing.Abstractions;
+#if NET6_0_OR_GREATER
+using OpenTelemetry.Trace;
+using Vostok.Clusterclient.Tracing.OpenTelemetry;
+#endif
 
 namespace Vostok.Clusterclient.Tracing
 {
@@ -38,7 +40,7 @@ namespace Vostok.Clusterclient.Tracing
             config.Transport = tracingTransport;
             config.AddRequestModule(tracingModule, typeof(DistributedContextModule));
         }
-
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Sets up OTel distributed tracing of HTTP requests.
         /// </summary>
@@ -68,5 +70,6 @@ namespace Vostok.Clusterclient.Tracing
             config.Transport = tracingTransport;
             config.AddRequestModule(tracingModule, typeof(DistributedContextModule));
         }
+#endif
     }
 }

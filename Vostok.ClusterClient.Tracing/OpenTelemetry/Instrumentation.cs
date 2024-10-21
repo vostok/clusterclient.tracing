@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if NET6_0_OR_GREATER
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
@@ -13,3 +14,4 @@ internal static class Instrumentation
     public const string ClusterSpanInitialName = "Vostok.ClusterClient.ClusterRequestOut";
     public const string ClientSpanInitialName = "Vostok.ClusterClient.ClientRequestOut";
 }
+#endif

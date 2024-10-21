@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using Vostok.Clusterclient.Core.Model;
@@ -35,3 +36,4 @@ public sealed class OpenTelemetryTracingConfiguration
     [CanBeNull]
     public Action<Activity, ClusterResult> EnrichWithClusterResult { get; set; }
 }
+#endif

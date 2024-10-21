@@ -1,4 +1,5 @@
-﻿namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
+﻿#if NET6_0_OR_GREATER
+namespace Vostok.Clusterclient.Tracing.OpenTelemetry;
 
 internal static class SemanticConventions
 {
@@ -21,3 +22,4 @@ internal static class SemanticConventions
     public const string AttributeStreaming = ClusterClientPrefix + "response.is_streaming";
     public const string AttributeClusterStatus = ClusterClientPrefix + "response.cluster_status";
 }
+#endif
