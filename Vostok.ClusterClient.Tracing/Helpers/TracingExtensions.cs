@@ -43,7 +43,7 @@ namespace Vostok.Clusterclient.Tracing.Helpers
                     return response;
                 }
 
-                return response.WithStream(new ProxyStream(response.Stream, builder, WellKnownAnnotations.Http.Response.Size));
+                return response.WithStream(new ProxyStream(response.Stream, builder));
             }
 
             builder.SetResponseDetails((int)response.Code, GetContentLength(response));

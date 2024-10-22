@@ -16,13 +16,10 @@ namespace Vostok.Clusterclient.Tracing.Helpers
         private long? read;
         private readonly AtomicBoolean disposed = false;
 
-        private readonly string bodySizeAttributeKey;
-
-        public ProxyStream(Stream stream, IHttpRequestSpanBuilder builder, string bodySizeAttributeKey)
+        public ProxyStream(Stream stream, IHttpRequestSpanBuilder builder)
         {
             this.stream = stream;
             this.builder = builder;
-            this.bodySizeAttributeKey = bodySizeAttributeKey;
         }
 
         public void AddAdditionalBuilder(IHttpRequestSpanBuilder value) =>
@@ -88,8 +85,8 @@ namespace Vostok.Clusterclient.Tracing.Helpers
 
             if (read.HasValue)
             {
-                builder.SetAnnotation(bodySizeAttributeKey, read.Value);
-                additionalBuilder?.SetAnnotation(bodySizeAttributeKey, read.Value);
+                builder.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read.Value);
+                additionalBuilder?.SetAnnotation(WellKnownAnnotations.Http.Response.Size, read.Value);
             }
 
             builder.Dispose();
