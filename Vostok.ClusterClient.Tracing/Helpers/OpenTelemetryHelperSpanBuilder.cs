@@ -6,6 +6,9 @@ using Vostok.Tracing.Extensions.Http;
 
 namespace Vostok.Clusterclient.Tracing.Helpers;
 
+/// <summary>
+/// A small helper wrapper to pass <see cref="Activity"/> into <see cref="ProxyStream"/>
+/// </summary>
 internal sealed class OpenTelemetryHelperSpanBuilder : IHttpRequestSpanBuilder
 {
     private readonly Activity activity;

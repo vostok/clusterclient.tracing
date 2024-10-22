@@ -164,7 +164,7 @@ internal class OpenTelemetryTracingModule_Tests
         CheckBodySizeAttribute(bodySize);
 
         void CheckBodySizeAttribute(long? size) =>
-            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpRequestBodySize).Should().Be(size);
+            recordedActivity.GetTagItem(WellKnownAnnotations.Http.Request.Size).Should().Be(size);
     }
 
     [Test]
@@ -192,7 +192,7 @@ internal class OpenTelemetryTracingModule_Tests
         // CheckBodySizeAttribute(bodySize);
 
         void CheckBodySizeAttribute(long? size) =>
-            recordedActivity.GetTagItem(SemanticConventions.AttributeHttpResponseBodySize).Should().Be(size);
+            recordedActivity.GetTagItem(WellKnownAnnotations.Http.Response.Size).Should().Be(size);
     }
 
     [Test]
