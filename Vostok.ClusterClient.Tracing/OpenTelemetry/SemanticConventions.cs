@@ -12,7 +12,7 @@ internal static class SemanticConventions
     public const string AttributeServerPort = "server.port";
 
     // ClusterClient related attributes.
-    private const string ClusterClientPrefix = "clusterclient.";
+    private const string ClusterClientPrefix = "vostok.clusterclient.";
 
     public const string AttributeClusterRequest = ClusterClientPrefix + "request.is_cluster";
     public const string AttributeRequestStrategy = ClusterClientPrefix + "request.strategy";
