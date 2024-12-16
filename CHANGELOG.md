@@ -1,3 +1,7 @@
+## 0.1.9 (16-12-2024): 
+
+Bump NuGet deps versions
+
 ## 0.1.8 (31-08-2021):
 
 Added a way to provide additional annotations based on Request and Response.
