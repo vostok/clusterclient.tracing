@@ -11,7 +11,7 @@ notests *default:
 
   deps:
     - vostok.devtools
-    - vostok.clusterclient.core
+    - vostok.clusterclient.core@native-tracing
     - vostok.clusterclient.context
     - vostok.tracing.abstractions
     - vostok.tracing.extensions

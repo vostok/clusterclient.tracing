@@ -19,6 +19,9 @@ namespace Vostok.Clusterclient.Tracing
         /// </summary>
         public static void SetupDistributedTracing([NotNull] this IClusterClientConfiguration config, [NotNull] TracingConfiguration configuration)
         {
+#if NET6_0_OR_GREATER
+            config.Tracing.Enabled = false; // note: Disable native tracing when use Vostok tracer.
+#endif
             config.SetupDistributedContext();
 
             var tracingTransport = new TracingTransport(config.Transport, configuration)
