@@ -73,5 +73,18 @@ namespace Vostok.Clusterclient.Tracing.Tests
 
             tracer.CurrentContext.Should().BeEquivalentTo(observedContext);
         }
+        
+        [Test]
+        public void Should_duplicate_trace_context_to_treaceparent_header()
+        {
+            client.Send(Request.Get("foo/bar"));
+
+            observedRequest.Should().NotBeNull();
+            observedContext.Should().NotBeNull();
+
+            observedRequest.Headers!["traceparent"]
+                           .Should()
+                           .Be($"00-{observedContext.TraceId:N}-{observedContext.SpanId.ToString("N").Substring(0, 16)}-01");
+        }
     }
 }
